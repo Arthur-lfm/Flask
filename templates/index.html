@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Car dealer</h1>
+    <hr>
+    <div class="content">
+    <form method="post">
+        <div class="form-group">
+            <div class="form1">
+                <p>
+                    <b><label for="content">Model of the car</label></b>
+                </p>
+                <p>
+                    <input type="text" name="content" required
+                        placeholder="Todo Content"></input>
+                </p>
+            </div>
+            
+            <div class="form2">
+                <p>
+                    <b><label for="degree">Type of engine</label></b>
+                </p>
+                <p>
+                    <input id="degree-0" name="degree" required type="radio" value="Internal">
+                    <label for="degree-0">Internal</label>
+                </p>
+                <p>
+                    <input id="degree-1" name="degree" required type="radio" value="Hybrid">
+                    <label for="degree-1">Hybrid</label>
+                </p>
+                <p>
+                    <input id="degree-2" name="degree" required type="radio" value="Electric">
+                    <label for="degree-2">Electric</label>
+                </p>
+            </div>
+            <div  class="form3">
+                <button type="submit">Submit</button>
+            </div>
+        </div>
+    </form>
+    <a href="{{ url_for('index') }}">All</a>
+    <a href="{{ url_for('index', degree='Internal') }}">Internal</a>
+    <a href="{{ url_for('index', degree='Hybrid') }}">Hybrid</a>
+    <a href="{{ url_for('index', degree='Electric') }}">Electric</a>
+    <hr>
+    {% for todo in todos %}
+        {% if not degree or todo.degree == degree %}
+            <div class="todo">
+                <p>{{ todo['content'] }} <i>({{ todo['degree']}})</i></p>
+                <form method="POST" action="{{ url_for('edit', id=todo['_id']) }}" class="edit-form" id="editForm{{ loop.index }}">
+                    <p>
+                        <b><label for="content{{ loop.index }}">Todo content</label></b>
+                    </p>
+                    <p>
+                        <input type="text" name="content" id="content{{ loop.index }}" value="{{ todo['content'] }}"></input>
+                    </p>
+                    <p>
+                        <b><label for="degree{{ loop.index }}">Evaluation</label></b>
+                    </p>
+                    <p>
+                        <input id="degree-0-{{ loop.index }}" name="degree" required type="radio" value="Internal" {% if todo['degree'] == 'Internal' %}checked{% endif %}>
+                        <label for="degree-0-{{ loop.index }}">Internal</label>
+                    </p>
+                    <p>
+                        <input id="degree-1-{{ loop.index }}" name="degree" required type="radio" value="Hybrid" {% if todo['degree'] == 'Hybrid' %}checked{% endif %}>
+                        <label for="degree-1-{{ loop.index }}">Hybrid</label>
+                    </p>
+                    <p>
+                        <input id="degree-2-{{ loop.index }}" name="degree" required type="radio" value="Electric" {% if todo['degree'] == 'Electric' %}checked{% endif %}>
+                        <label for="degree-2-{{ loop.index }}">Electric</label>
+                    </p>
+                    <input type="submit" value="Save Todo">
+                </form>
+                <button type="button" onclick="document.getElementById('editForm{{ loop.index }}').style.display = 'block';">Edit Todo</button>
+                <form method="POST" action="{{ url_for('delete', id=todo['_id']) }}" >
+                    <input type="submit" value="Delete Todo"
+                           onclick="return confirm('Are you sure you want to delete this entry?')">
+                </form>
+            </div>
+        {% endif %}
+    {% endfor %}
+    </div>
+
+{% endblock %}
